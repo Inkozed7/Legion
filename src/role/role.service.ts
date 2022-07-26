@@ -8,28 +8,32 @@ import { RoleEntity } from './entities/role.entity';
 @Injectable()
 export class RoleService {
 
-    constructor(
-      
-        @InjectRepository(RoleEntity)
-      private readonly roles: Repository<RoleEntity>
-      
-      ) {}
-    async createRole(CreateRoleDto:CreateRoleDto){
-        const role = this.roles.create(CreateRoleDto)
-       return await this.roles.save(role)
-    }
+  constructor(
 
+    @InjectRepository(RoleEntity)
+    private readonly roles: Repository<RoleEntity>
 
-    async getRoleByValue(roles : string){
-      const role = 
-         await this.roles.findOne({
+  ) { }
+  async createRole(CreateRoleDto: CreateRoleDto) {
+    const role = this.roles.create(CreateRoleDto)
+    return await this.roles.save(role)
+  }
+
+  async addRoleUser(userId: number, roleId: number) {
+    const role = await this.roles.findOne({where:{id: roleId}})
+    
+  }
+
+  async getRoleByValue(roles: string) {
+    const role =
+      await this.roles.findOne({
         where: {
-              role: roles,       
-            },
-          });
-          if (!role) throw new NotFoundException(`role ${roles} not found`); 
-          return role
-    }
+          role: roles,
+        },
+      });
+    if (!role) throw new NotFoundException(`role ${roles} not found`);
+    return role
+  }
 }
 declare interface IFindParams {
   roles: string;

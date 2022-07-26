@@ -19,12 +19,11 @@ export class JwtAuthGuard implements CanActivate {
 				throw new UnauthorizedException('Access denied');
 			}
 			const user = this.jwtService.verify(token);
-			req.user = user;
 			return true
 		}
 		catch (e) {
 
-			throw new UnauthorizedException('Access denied');
+			throw new UnauthorizedException('Access denied_JWT');
 		}
 	}
 }
