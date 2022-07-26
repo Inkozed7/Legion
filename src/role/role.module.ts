@@ -6,16 +6,10 @@ import { RoleEntity } from './entities/role.entity';
 import { UserModule } from 'src/user/user.module';
 import { AuthModule } from 'src/auth/auth.module';
 
-
 @Module({
   controllers: [RoleController],
   providers: [RoleService],
-  imports: [
-    TypeOrmModule.forFeature([RoleEntity]),
-    forwardRef(() => UserModule),
-    AuthModule
-
-  ],
-  exports: [RoleService]
+  imports: [TypeOrmModule.forFeature([RoleEntity]), AuthModule],
+  exports: [RoleService],
 })
-export class RoleModule { }
+export class RoleModule {}

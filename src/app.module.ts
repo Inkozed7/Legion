@@ -4,15 +4,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { RoleModule } from './role/role.module';
-import { JwtModule } from '@nestjs/jwt';
-
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.env'
+      envFilePath: '.env',
     }),
-
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.PG_HOST,
@@ -23,16 +20,11 @@ import { JwtModule } from '@nestjs/jwt';
       autoLoadEntities: true,
       synchronize: true,
     }),
-
     UserModule,
-
     AuthModule,
-
     RoleModule,
-
-
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}

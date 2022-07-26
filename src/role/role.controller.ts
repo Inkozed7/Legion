@@ -6,16 +6,13 @@ import { RoleService } from './role.service';
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
-
   @Post('/create')
-  async createRole(@Body() createRoleDto : CreateRoleDto)
-  {
-     return this.roleService.createRole(createRoleDto)
+  async createRole(@Body() createRoleDto: CreateRoleDto) {
+    return this.roleService.createRole(createRoleDto);
   }
 
   @Get('/:value')
-  async getRoleByValue(@Param('value') value : string)
-  {  
-     return this.roleService.getRoleByValue(value)
+  async getRoleByValue(@Param('value') value: string) {
+    return this.roleService.getRoleByName(value);
   }
 }

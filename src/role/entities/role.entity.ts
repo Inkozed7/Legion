@@ -1,18 +1,24 @@
 import { UserEntity } from 'src/user/entities/user.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinTable } from 'typeorm';
-
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinTable,
+  ManyToMany,
+} from 'typeorm';
 
 @Entity('role')
 export class RoleEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    role: string;
+  @Column()
+  role: string;
 
-    @Column()
-    description: string;
+  @Column()
+  description: string;
 
-    @ManyToOne(()=> UserEntity, (user)=> user.roles)
-    user: UserEntity
+  @ManyToMany(() => UserEntity, (user) => user.roles)
+  users: UserEntity[];
 }

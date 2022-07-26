@@ -3,76 +3,81 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserEntity } from './entities/user.entity';
-import * as bcrypt from 'bcrypt';
 import { RoleService } from 'src/role/role.service';
 import { RolesEnums } from 'src/common/enums/roles.enums';
-import { RoleEntity } from 'src/role/entities/role.entity';
-import { AddRoleDto } from './dto/add-Role.dto';
+import { AddRoleDto } from './dto/add-role.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly users: Repository<UserEntity>,
-    private readonly role: RoleService
-  ) { }
+    private readonly role: RoleService,
+  ) {}
 
   async createUser(createUserDto: CreateUserDto) {
-    console.log(createUserDto)
-    const user = await this.users.create(createUserDto)
-    const roles = await this.role.getRoleByValue(RolesEnums.client)
-    user.roles = [roles]
-    return this.users.save(user)
-
+    console.log(createUserDto);
+    const user = this.users.create(createUserDto) as Partial<UserEntity>;
+    const roles = await this.role.getRoleByName(RolesEnums.client);
+    user.roles = [roles];
+    return await this.users.save(user);
   }
   async addRole(AddRoleDto: AddRoleDto) {
-    const user = await this.users.findOne({ where: { id: AddRoleDto.idUser } })
-    const role = await this.role.getRoleByValue(AddRoleDto.role)
+    const user = await this.users.findOne({ where: { id: AddRoleDto.userId } });
+    const role = await this.role.getRoleByName(AddRoleDto.roleName);
     if (role && user) {
-        await this.role.createRole
+      user.roles.push(role);
+      // await this.users.update({ where: { id: AddRoleDto.userId }}, )
+      await this.users.save(user);
+      return user;
     }
-    return user
   }
 
-  async getUserbyEmail(email: string) {
+  async getUserByEmail(email: string) {
     // console.log(email);
-    const user = await this.users.findOne({ where: { email: email }, relations: { roles: true } })
-    if (!user) return null
+    const user = await this.users.findOne({
+      where: { email: email },
+      relations: { roles: true },
+    });
+    if (!user) return null;
     return [
       {
         userEmail: user.email,
         userCompany: user.companyName,
         userCity: user.city,
         userPhone: user.phoneNumber,
-        userRole: user.roles.map(i => i.role),
-      }]
+        userRole: user.roles.map((i) => i.role),
+      },
+    ];
   }
 
-  async getRolebyEmail(email: string) {
+  async getUserRolesByEmail(email: string) {
+    const user = await this.users.findOne({
+      where: { email: email },
+      relations: { roles: true },
+    });
 
-    const user = await this.users.findOne({ where: { email: email }, relations: { roles: true } })
-
-    return user.roles.map(i => i.role)
-
+    return user.roles.map((i) => i.role);
   }
-
 
   async findByParam(params: IFindParams) {
     const { email } = params;
     return this.users.findOne({
-
       where: {
         email: email,
       },
     });
   }
 
-
+  async findById(id: number) {
+    return this.users.findOne({
+      where: {
+        id: id,
+      },
+    });
+  }
 }
-
-
 
 declare interface IFindParams {
   email: string;
-
 }

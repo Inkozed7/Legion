@@ -9,14 +9,11 @@ import { AuthModule } from 'src/auth/auth.module';
 @Module({
   controllers: [UserController],
   providers: [UserService],
+  exports: [UserService],
   imports: [
     TypeOrmModule.forFeature([UserEntity]),
-    RoleModule,
     forwardRef(() => AuthModule),
-
+    forwardRef(() => RoleModule),
   ],
-  exports: [
-    UserService,
-  ]
 })
-export class UserModule { }
+export class UserModule {}
